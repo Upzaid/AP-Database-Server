@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const PersonalSchema = new Schema({
+    clave: {type: Number, trim: true},
     nombre: {type: String, trim: true},
     primer_apellido: {type: String, trim: true},    
     segundo_apellido: {type: String, trim: true},    
