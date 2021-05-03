@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
-const validation = require('../validation')
+const validation = require('../validation').userValidation
+const { response } = require('express')
 
 // Get active user
 
@@ -16,7 +17,7 @@ exports.registration = async (req, res) =>{
     const errors = []
     
     // Validate inputs
-    const {error} = validation.userValidation.validate(req.body)
+    const {error} = validation.validate(req.body)
     if (error) errors.push(error.details[0].message)
     
     // Check if the user already exists
@@ -62,5 +63,20 @@ exports.log_in = async (req, res) =>{
         }, process.env.TOKEN_SECRET))
     }
 
-    res.status(401).json('Nombre de usuario y/o contraseña invalido')
+    res.status(401).json('Nombre de usuario y/o contraseña no valido')
+}
+
+// Delete user
+
+exports.delete = async (req, res) =>{
+    // Make sure the user exists
+    const user = await User.findOne({username: req.body.username})
+    
+    // Delete
+    if (user) {
+        user.deleteOne({username: req.body.username})
+        return res.json('Usuario borrado exitosamente')
+    }
+    
+    res.status(400).json('Usuario no existe')
 }
