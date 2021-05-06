@@ -53,7 +53,7 @@ exports.anticipo_create = async (req,res) =>{
         const {id} = await Personal.findOne({clave: req.body.personal})
         if (!id) errors.push(`Personal con clave ${req.body.clave} no existe`)
 
-        if (errors.length > 0) return res.send(errors)
+        if (errors.length > 0) return res.status(403).json(errors)
         // Save anticipo in database
         
         const {serie, folio, fecha, concepto, importe} = req.body
@@ -89,8 +89,10 @@ exports.anticipo_delete = async (req,res) =>{
 }
 
 // Edit anticipo
-exports.anticipo_edit = async (req,res) =>{
+exports.anticipo_edit = async (req, res) =>{
+
     try {
+        const errors = []
         // Find ID
         const response = await Anticipo.findOne({serie: req.body.serie, folio: req.body.folio})
         
@@ -102,6 +104,7 @@ exports.anticipo_edit = async (req,res) =>{
         const personalID = await Personal.findOne({clave: personal})
         if (!personalID) return res.status(500).json('Personal no existente')
 
+        
         const anticipo = new Anticipo({
             serie,
             folio,
@@ -123,10 +126,21 @@ exports.anticipo_edit = async (req,res) =>{
 // Find anticipo by folio and serie
 exports.anticipo_find = async (req,res) =>{
     try {
-        const response = await Anticipo.findOne({serie: req.params.serie, folio: req.params.folio})
+        const response = await Anticipo.findOne({serie: req.params.serie, folio: req.params.folio}).populate('personal')
         if (response) return res.json(response)
     } catch (error) {
         return res.status(500).send(error)
     }
     res.status(500).json('Anticipo no existente')
+}
+
+// Get latest anticipo
+
+exports.anticipo_latest = async (req, res) =>{
+    try {
+        const response = await Anticipo.findOne().sort({serie: 1, folio: -1}).populate('personal')
+        if (response) return res.json(response)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
 }
