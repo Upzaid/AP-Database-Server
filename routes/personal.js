@@ -21,4 +21,7 @@ router.put('/edit', tokenAuthentication, validation.editValidation, personal_con
 // Find personal by clave
 router.get('/find/:clave', tokenAuthentication, personal_controller.personal_find)
 
+// Find latest anticipo
+router.get('/latest', tokenAuthentication, personal_controller.personal_latest)
+
 module.exports = router

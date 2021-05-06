@@ -1,4 +1,3 @@
-const tokenAuthentication = require('../tokenAuthentication')
 const validation = require('../validation').personalValidation
 const Personal = require('../models/personal')
 
@@ -7,10 +6,12 @@ exports.peronal_list = async (req, res) =>{
     const response = await Personal.find().sort({clave: 1}) 
 
     res.json(response.map(personal =>{
-        const {clave, nombres, primer_apellido, segundo_apellido, telefono, imss, fotografia, identificacion, fecha_inicio, fecha_termino, email} = personal
+        const {clave, rfc, nombres, primer_apellido, segundo_apellido, telefono, 
+            imss, fotografia, identificacion, fecha_alta, fecha_baja, email, licencia} = personal
         return (
             {
                 clave,
+                rfc,
                 nombres,
                 primer_apellido,
                 segundo_apellido,
@@ -18,9 +19,10 @@ exports.peronal_list = async (req, res) =>{
                 imss,
                 fotografia,
                 identificacion,
-                fecha_inicio,
-                fecha_termino,
-                email
+                fecha_alta,
+                fecha_baja,
+                email,
+                licencia
             }
         )
     }))
@@ -33,7 +35,7 @@ exports.personal_create = async (req, res) =>{
     const {error} = validation.validate(req.body)
     
     if (error) errors.push(error.details[0].message)
-
+    
     // Check clave is not used
     response = await Personal.findOne({clave: req.body.clave})
 
@@ -44,11 +46,12 @@ exports.personal_create = async (req, res) =>{
         return res.status(403).json(errors)
     }
 
-    const {clave, nombres, primer_apellido, segundo_apellido, telefono, imss,
-        fotografia, identificacion, fecha_inicio, fecha_termino, email} = req.body
+    const {clave, rfc, nombres, primer_apellido, segundo_apellido, telefono, imss,
+        fotografia, identificacion, fecha_alta, fecha_baja, email, licencia} = req.body
     
     const personal = new Personal({
         clave,
+        rfc,
         nombres,
         primer_apellido,
         segundo_apellido,
@@ -56,9 +59,10 @@ exports.personal_create = async (req, res) =>{
         imss,
         fotografia,
         identificacion,
-        fecha_inicio,
-        fecha_termino,
-        email
+        fecha_alta,
+        fecha_baja,
+        email,
+        licencia
     })
 
     // Add to database
@@ -91,9 +95,8 @@ exports.personal_delete = async (req, res)=>{
 
 exports.personal_edit = async (req, res) =>{
     try {
-
-        const {clave, nombres, primer_apellido, segundo_apellido, telefono, imss,
-            fotografia, identificacion, fecha_inicio, fecha_termino, email} = req.body
+        const {clave, rfc, nombres, primer_apellido, segundo_apellido, telefono, imss,
+            fotografia, identificacion, fecha_alta, fecha_baja, email, licencia} = req.body
         
         const response = await Personal.findOne({clave})
         
@@ -101,6 +104,7 @@ exports.personal_edit = async (req, res) =>{
 
                 const personal = new Personal({
                     clave,
+                    rfc,
                     nombres,
                     primer_apellido,
                     segundo_apellido,
@@ -108,9 +112,10 @@ exports.personal_edit = async (req, res) =>{
                     imss,
                     fotografia,
                     identificacion,
-                    fecha_inicio,
-                    fecha_termino,
+                    fecha_alta,
+                    fecha_baja,
                     email,
+                    licencia,
                     _id : response._id
                 })
                 
@@ -119,7 +124,7 @@ exports.personal_edit = async (req, res) =>{
             }
 
     } catch (error) {
-        return res.send(error)
+        return res.status(500).send(error)
     }
     res.status(403.).json('Personal no encontrado')
 }
@@ -137,4 +142,16 @@ exports.personal_find = async (req, res) =>{
     }
 
     res.send('Personal no encontrado')
+}
+
+
+// Get latest personal
+
+exports.personal_latest = async (req, res) =>{
+    try {
+        const response = await Personal.findOne().sort({clave: -1})
+        if (response) return res.json(response)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
 }
