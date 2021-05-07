@@ -20,4 +20,7 @@ router.put('/edit', tokenAuthentication, validation.editValidation,  cliente_con
 // Find cliente by clave
 router.get('/find/:clave', tokenAuthentication, cliente_controller.cliente_find)
 
+// Find latest cliente
+router.get('/latest', tokenAuthentication, cliente_controller.cliente_latest)
+
 module.exports = router

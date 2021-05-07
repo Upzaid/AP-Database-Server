@@ -1,4 +1,3 @@
-const tokenAuthentication = require('../tokenAuthentication')
 const validation = require('../validation').navieraValidation
 const Cliente = require('../models/cliente')
 
@@ -52,7 +51,7 @@ exports.cliente_create = async (req, res) =>{
 // Delete cliente
 exports.cliente_delete = async (req, res) =>{
     
-    const response = await cliente.findOne({clave: req.body.clave}, {useFindAndModify: false})
+    const response = await Cliente.findOne({clave: req.body.clave}, {useFindAndModify: false})
     
     if (response) {
         await Cliente.findByIdAndRemove(response.id)
@@ -64,7 +63,7 @@ exports.cliente_delete = async (req, res) =>{
 
 // Edit cliente
 exports.cliente_edit = async (req, res) =>{
-    const response = await cliente.findOne({clave: req.body.clave})
+    const response = await Cliente.findOne({clave: req.body.clave})
     
     if (response) {
         const {clave, razon_social, rfc, domicilio, telefono} = req.body
@@ -96,4 +95,15 @@ exports.cliente_find = async (req, res) =>{
     }
 
     res.send('Cliente no encontrado')
+}
+
+// Get latest cliente
+
+exports.cliente_latest = async (req, res) =>{
+    try {
+        const response = await Cliente.findOne().sort({clave: -1})
+        if (response) return res.json(response)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
 }

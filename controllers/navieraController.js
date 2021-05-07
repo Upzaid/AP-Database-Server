@@ -1,4 +1,3 @@
-const tokenAuthentication = require('../tokenAuthentication')
 const validation = require('../validation').navieraValidation
 const Naviera = require('../models/naviera')
 
@@ -97,4 +96,15 @@ exports.naviera_find = async (req, res) =>{
     }
 
     res.send('Naviera no encontrado')
+}
+
+// Get latest naviera
+
+exports.naviera_latest = async (req, res) =>{
+    try {
+        const response = await Naviera.findOne().sort({clave: -1})
+        if (response) return res.json(response)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
 }
