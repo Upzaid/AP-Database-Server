@@ -82,15 +82,15 @@ exports.ordenValidation = Joi.object({
     folio: Joi.number().required().integer(),
     fecha: Joi.date().required(),
 
-    ruta: Joi.string(),
-    origen: Joi.string(),
-    tipo_servicio: Joi.string(),
-    destino_agencia: Joi.string(),
-    observaciones: Joi.string(),
+    ruta: Joi.string().allow(''),
+    origen: Joi.string().allow(''),
+    tipo_servicio: Joi.string().allow(''),
+    destino_agencia: Joi.string().allow(''),
+    observaciones: Joi.string().allow(''),
 
-    consignatario: Joi.string(),
+    consignatario: Joi.number().integer(),
     naviera: Joi.number().integer(),
-    contenedor: Joi.string(),
+    contenedor: Joi.string().required(),
     tamano: Joi.string(),
     sello: Joi.string(),
     booking: Joi.string(),
@@ -99,16 +99,41 @@ exports.ordenValidation = Joi.object({
     operador: Joi.number().integer(),
     unidad: Joi.number().integer(),
 
-    flete: Joi.number(),
-    maniobra: Joi.number(),
-    almacenaje: Joi.number(),
-    flete_falso: Joi.number(),
-    reexpedicion: Joi.number(),
-    dif_kilometraje: Joi.number(),
-    subtotal: Joi.number(),
-    iva: Joi.number(),
-    retencion: Joi.number(),
-    total: Joi.number(),
+    flete: Joi.number().allow(''),
+    maniobra: Joi.number().allow(''),
+    almacenaje: Joi.number().allow(''),
+    flete_falso: Joi.number().allow(''),
+    reexpedicion: Joi.number().allow(''),
+    dif_kilometraje: Joi.number().allow(''),
+    subtotal: Joi.number().allow(''),
+    iva: Joi.number().allow(''),
+    retencion: Joi.number().allow(''),
+    total: Joi.number().allow(''),
 
     estatus: Joi.string(),
+})
+
+const anticipo = Joi.object().keys({
+    serie: Joi.string().required(),
+    folio: Joi.number().required().integer(),
+})
+
+const orden = Joi.object().keys({
+    serie: Joi.string().required(),
+    folio: Joi.number().required().integer(),
+})
+
+const comprobacion = Joi.object().keys({
+    concepto: Joi.string().required(),
+    importe: Joi.number().required(),
+})
+
+exports.liquidacionValidation = Joi.object({
+    folio: Joi.number().required().integer(),
+    fecha: Joi.date().required(),
+    operador: Joi.number().required().integer(),
+    importe: Joi.number().required(),
+    anticipos: Joi.array().items(anticipo),
+    ordenes: Joi.array().items(orden),
+    comprobacion: Joi.array().items(comprobacion),
 })
