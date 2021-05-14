@@ -73,7 +73,7 @@ module.exports.liquidacion_create = async (req, res) =>{
         }
     }))
 
-    // Check each orden is not on another liquidacion
+    // Check each orden is not in another liquidacion
     ordenesIDs.forEach(async id => {
         const ordenCheck = await Liquidacion.findOne({ordenes: id})
         if (ordenCheck){
@@ -173,14 +173,14 @@ module.exports.liquidacion_edit = async (req, res) =>{
     }))
     
     // Check each anticipo is not on a different liquidacion
-    anticiposIDs.forEach(async id => {
+    await Promise.all(anticiposIDs.map(async id => {
         const anticipoCheck = await Liquidacion.findOne({anticipos: id})
         if (anticipoCheck){
             if (anticipoCheck.id !== liquidacionID){
                 errors.push(`Anticipo asignado a la liquidacion ${anticipoCheck.folio}`)
             }
         }
-    });
+    }))
     
     // Check each orden exists if it does get its id
     const ordenesIDs = await Promise.all(ordenes.map(async orden =>{
@@ -197,14 +197,14 @@ module.exports.liquidacion_edit = async (req, res) =>{
     }))
 
     // Check each orden is not on a different liquidacion
-    ordenesIDs.forEach(async id => {
+    await Promise.all(ordenesIDs.map(async id => {
         const ordenCheck = await Liquidacion.findOne({ordenes: id})
         if (ordenCheck){
             if(ordenCheck.id !== liquidacionID){
                 errors.push(`Orden asignada a la liquidacion ${ordenCheck.folio}`)
             }
         }
-    });
+    }))
 
     if (errors.length > 0) return res.status(202).json(errors)
 
