@@ -113,6 +113,7 @@ exports.ordenValidation = Joi.object({
     estatus: Joi.string(),
 })
 
+// Liquidacion
 const anticipo = Joi.object().keys({
     serie: Joi.string().required(),
     folio: Joi.number().required().integer(),
@@ -136,4 +137,26 @@ exports.liquidacionValidation = Joi.object({
     anticipos: Joi.array().items(anticipo),
     ordenes: Joi.array().items(orden),
     comprobacion: Joi.array().items(comprobacion),
+})
+
+// Mantenimiento
+
+exports.mantenimientoValidation = Joi.object({
+    folio: Joi.number().required().integer(),
+    fecha_inicio: Joi.date().required(),
+    fecha_cierre: Joi.date().allow(''),
+    unidad: Joi.number().required(),
+    costo: Joi.number().allow(''),
+    ubicacion: Joi.string().allow(''),
+    descripcion: Joi.string().allow(''),
+})
+
+// Factura
+exports.facturaValidation = Joi.object({
+    serie: Joi.string().required(),
+    folio: Joi.number().required().integer(),
+    fecha: Joi.date().required(),
+    receptor: Joi.number().required().integer(),
+    ordenes: Joi.array().items(orden),
+    total: Joi.number().required(),
 })
