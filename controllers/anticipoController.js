@@ -1,6 +1,7 @@
 const validation = require('../validation').anticipoValidation
 const Anticipo = require('../models/anticipo')
 const Personal = require('../models/personal')
+const Liquidacion = require('../models/liquidacion')
 
 // List of anticipos
 exports.anticipo_list = async (req, res) =>{
@@ -53,7 +54,7 @@ exports.anticipo_create = async (req,res) =>{
         const {id} = await Personal.findOne({clave: req.body.personal})
         if (!id) errors.push(`Personal con clave ${req.body.clave} no existe`)
 
-        if (errors.length > 0) return res.status(403).json(errors)
+        if (errors.length > 0) return res.status(202).json(errors)
         // Save anticipo in database
         
         const {serie, folio, fecha, concepto, importe} = req.body
@@ -77,15 +78,39 @@ exports.anticipo_create = async (req,res) =>{
 
 // Delete anticipo
 exports.anticipo_delete = async (req,res) =>{
-    
+
+    const errors =[]
+    let anticipoID 
+    // Check anticipo exists and get its id
     try {
-        const response = await Anticipo.findOneAndDelete({serie: req.body.serie, folio: req.body.folio})
+        const anticipo = await Anticipo.findOne({serie: req.body.serie, folio:req.body.folio})
+        if (!anticipo) {
+            errors.push('Anticipo no existe')
+        } else {
+            anticipoID = anticipo.id
+        }
+
+    } catch (error) {
+        res.status(500).send(error)
+    }
+
+    // Check if there are liquidaicones anticipo
+    try {
+        const liquidacion = await Liquidacion.findOne({anticipos: anticipoID})
+        if (liquidacion) errors.push(`Anticipo en la liquidacion ${liquidacion.folio}`)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+
+    if (errors.length > 0) return res.status(202).json(errors)
+
+    try {
+        const response = await Anticipo.findByIdAndDelete(anticipoID)
         if (response) return res.json('Anticipo borrado exitosamente')
         
     } catch (error) {
         return res.status(500).send(error)
     }
-    return res.status(500).json('Anticipo no existente')
 }
 
 // Edit anticipo
@@ -96,13 +121,13 @@ exports.anticipo_edit = async (req, res) =>{
         // Find ID
         const response = await Anticipo.findOne({serie: req.body.serie, folio: req.body.folio})
         
-        if (!response) return res.status(500).json('Anticipo no existente')
+        if (!response) return res.status(202).json('Anticipo no existe')
         
         const {serie, folio, personal, fecha , concepto, importe} = req.body
         
         // Find personal id
         const personalID = await Personal.findOne({clave: personal})
-        if (!personalID) return res.status(500).json('Personal no existente')
+        if (!personalID) return res.status(202).json('Personal no existe')
 
         
         const anticipo = new Anticipo({
@@ -131,7 +156,7 @@ exports.anticipo_find = async (req,res) =>{
     } catch (error) {
         return res.status(500).send(error)
     }
-    res.status(500).json('Anticipo no existente')
+    res.status(202).json('Anticipo no existe')
 }
 
 // Get latest anticipo
