@@ -231,9 +231,10 @@ module.exports.liquidacion_edit = async (req, res) =>{
 // Find liquidacion by folio
 module.exports.liquidacion_find = async (req, res) =>{
     try {
-        const response = await Liquidacion.findO({serie: req.params.folio})
+        const response = await Liquidacion.findOne({folio: req.params.folio}).populate('operador').populate('ordenes').populate('anticipos')
         res.json(response)
     } catch (error) {
+        console.log(error);
         res.status(500).send(error)
     }
 }

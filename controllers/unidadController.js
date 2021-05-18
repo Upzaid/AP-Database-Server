@@ -27,7 +27,7 @@ exports.unidad_create = async (req, res) =>{
     const response = await Unidad.findOne({clave: req.body.clave})
     if (response) errors.push('Clave de unidad ya existe')
     
-    if (errors.length > 0) return res.status(402).json(errors)
+    if (errors.length > 0) return res.status(202).json(errors)
     // Add to database
     try {
         const {clave, motor, placas, modelo, niv, descripcion} = req.body
@@ -55,7 +55,7 @@ exports.unidad_delete = async (req, res) =>{
     } catch (error) {
         return res.status(500).sned(error)
     }
-    res.status(403).json('Unidad no existente')
+    res.status(202).json('Unidad no existe')
 }
 
 // Edit unidad
@@ -80,7 +80,7 @@ exports.unidad_edit = async (req, res) =>{
             return res.status(500).send(error)
         }
     }
-    res.status(403).json('Unidad no existente')
+    res.status(202).json('Unidad no existe')
 }
 
 // Find unidad by clave
@@ -94,5 +94,5 @@ exports.unidad_find = async (req, res) =>{
         return res.send(error)
     }
 
-    res.send('Unidad no encontrada')
+    res.status(202).json('Unidad no existe')
 }

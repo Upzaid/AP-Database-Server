@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const validation = require('../validation').userValidation
-const { response } = require('express')
 
 // Get active user
 
@@ -27,7 +26,7 @@ exports.registration = async (req, res) =>{
         errors.push('El usuario ya existe')
     } 
     
-    if (errors.length > 0) return res.status(401).json(errors)
+    if (errors.length > 0) return res.status(202).json(errors)
 
     // Encrypt password
     const encPassword = await bcrypt.hash(req.body.password, 10)
@@ -50,7 +49,7 @@ exports.log_in = async (req, res) =>{
     
     // Query for user
     const user = await User.findOne({username: req.body.username})
-    if (!user) return res.status(401).json('Nombre de usuario o contraseña invalidos')
+    if (!user) return res.status(202).json('Nombre de usuario o contraseña invalidos')
 
     // Compare encrypted passwords
     const passwordCheck = await bcrypt.compare(req.body.password, user.password)
@@ -63,7 +62,7 @@ exports.log_in = async (req, res) =>{
         }, process.env.TOKEN_SECRET))
     }
 
-    res.status(401).json('Nombre de usuario y/o contraseña no valido')
+    res.status(202).json('Nombre de usuario y/o contraseña no valido')
 }
 
 // Delete user
@@ -78,5 +77,5 @@ exports.delete = async (req, res) =>{
         return res.json('Usuario borrado exitosamente')
     }
     
-    res.status(400).json('Usuario no existe')
+    res.status(202).json('Usuario no existe')
 }

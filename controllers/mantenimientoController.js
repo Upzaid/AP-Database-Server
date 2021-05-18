@@ -65,7 +65,7 @@ module.exports.mantenimiento_edit = async (req, res)=>{
     try {
         const response = await Mantenimiento.findOne({folio})
         if (!response){
-            errors.push('Orden de mantenimiento inexistente')
+            errors.push('Orden de mantenimiento no existe')
         }else {
             mantenimientoID = response.id
         }

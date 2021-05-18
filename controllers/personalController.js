@@ -43,7 +43,7 @@ exports.personal_create = async (req, res) =>{
         errors.push(`Clave de personal ${req.body.clave} esta asignada`)
     }
     if (errors.length > 0){
-        return res.status(403).json(errors)
+        return res.status(202).json(errors)
     }
 
     const {clave, rfc, nombres, primer_apellido, segundo_apellido, telefono, imss,
@@ -88,7 +88,7 @@ exports.personal_delete = async (req, res)=>{
     } catch (error) {
        return res.send(error)
     }
-    res.status(403.).json('Personal no encontrado')
+    res.status(202).json('Personal no existe')
 }
 
 // Edit personal
@@ -126,7 +126,7 @@ exports.personal_edit = async (req, res) =>{
     } catch (error) {
         return res.status(500).send(error)
     }
-    res.status(403.).json('Personal no encontrado')
+    res.status(202).json('Personal no existe')
 }
 
 // Find Personal by clave
@@ -141,7 +141,7 @@ exports.personal_find = async (req, res) =>{
         return res.send(error)
     }
 
-    res.send('Personal no encontrado')
+    res.statu(202).json('Personal no existe')
 }
 
 

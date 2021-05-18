@@ -61,7 +61,7 @@ exports.orden_create = async (req, res) =>{
         if (navieraQuery) {
             navieraID = navieraQuery.id
         } else {
-            errors.push('Naviera no existente')
+            errors.push('Naviera no existe')
         }
     } catch (error) {
         return res.status(500).send(error)
@@ -73,7 +73,7 @@ exports.orden_create = async (req, res) =>{
         if (operadorQuery) {
             operadorID = operadorQuery.id
         } else{
-            errors.push('Operador no existente')
+            errors.push('Operador no existe')
         }
     
     } catch (error) {
@@ -86,7 +86,7 @@ exports.orden_create = async (req, res) =>{
         if (clienteQuery) {
             consignatarioID = clienteQuery.id
         } else {
-            errors.push('Consignatario no existente')
+            errors.push('Consignatario no existe')
         }
     } catch (error) {
         return res.status(500).send(error)
@@ -98,7 +98,7 @@ exports.orden_create = async (req, res) =>{
         if (unidadQuery) {
             unidadID = unidadQuery.id
         } else{
-            errors.push('Unidad no existente')
+            errors.push('Unidad no existe')
         }
     } catch (error) {
         return res.status(500).send(error)
@@ -108,7 +108,7 @@ exports.orden_create = async (req, res) =>{
     const response = await Orden.findOne({serie: req.body.serie, folio: req.body.folio})
     if (response) errors.push('Serie y folio asignados')
 
-    if (errors.length > 0) return res.status(403).json(errors)
+    if (errors.length > 0) return res.status(202).json(errors)
     
     // 
     try {
@@ -137,7 +137,7 @@ exports.orden_delete = async (req, res) =>{
     } catch (error) {
         return res.status(500).send(error)
     }
-    res.status(403).json('Orden no existente')
+    res.status(202).json('Orden no existe')
 }
 
 // Edit orden
@@ -153,7 +153,7 @@ exports.orden_edit = async (req, res) =>{
         if (navieraQuery) {
             navieraID = navieraQuery.id
         } else {
-            errors.push('Naviera no existente')
+            errors.push('Naviera no existe')
         }
     } catch (error) {
         return res.status(500).send(error)
@@ -165,7 +165,7 @@ exports.orden_edit = async (req, res) =>{
         if (operadorQuery) {
             operadorID = operadorQuery.id
         } else{
-            errors.push('Operador no existente')
+            errors.push('Operador no existe')
         }
     
     } catch (error) {
@@ -178,7 +178,7 @@ exports.orden_edit = async (req, res) =>{
         if (unidadQuery) {
             unidadID = unidadQuery.id
         } else{
-            errors.push('Unidad no existente')
+            errors.push('Unidad no existe')
         }
     } catch (error) {
         return res.status(500).send(error)
@@ -200,7 +200,7 @@ exports.orden_edit = async (req, res) =>{
     const response = await Orden.findOne({serie: req.body.serie, folio: req.body.folio})
     if (!response) errors.push('Orden no existente')
     
-    if (errors.length > 0) return res.status(403).json(errors)
+    if (errors.length > 0) return res.status(202).json(errors)
     
 
     try {
@@ -240,7 +240,7 @@ exports.orden_find = async (req, res) =>{
 // Find latest orden
 exports.orden_latest = async (req, res) =>{
     try {
-        const response = await Orden.findOne().sort({serie: -1})
+        const response = await Orden.findOne().sort({folio: -1})
         if(response) return res.json(response)
     } catch (error) {
         return res.status(500).send(error)

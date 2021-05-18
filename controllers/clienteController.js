@@ -7,7 +7,7 @@ exports.cliente_list = async (req, res) =>{
     
     const response = await Cliente.find().sort({razon_social: 1}) 
 
-    res.json(response.map(cliente =>{
+    return res.json(response.map(cliente =>{
         const {clave, razon_social, rfc, domicilio, telefono} = cliente
         return (
             {
@@ -27,7 +27,7 @@ exports.cliente_create = async (req, res) =>{
     
     // Validate inputs
     const {error} = validation.validate(req.body)
-    if (error) return res.status(403).json(error.details[0].message)
+    if (error) return res.status(202).json(error.details[0].message)
 
     // Verify clave is not already used
     
@@ -45,7 +45,7 @@ exports.cliente_create = async (req, res) =>{
         cliente.save()
         return res.json('Cliente creado exitosamente')
     }
-    res.status(403).json(`La clave de cliente ${req.body.clave} esta asignada`)
+    res.status(202).json(`La clave de cliente ${req.body.clave} esta asignada`)
 }
 
 // Delete cliente
@@ -58,7 +58,7 @@ exports.cliente_delete = async (req, res) =>{
         return res.json('Cliente borrada exitosamente')
     }
 
-    res.status(403).json('Cliente no existe')
+    res.status(202).json('Cliente no existe')
 }
 
 // Edit cliente
@@ -80,7 +80,7 @@ exports.cliente_edit = async (req, res) =>{
         return res.json('Cliente actulizada exitosamente')
     }
 
-    res.status(403).json('Cliente no existe')
+    res.status(202).json('Cliente no existe')
 }
 
 // Find cliente by clave
@@ -94,11 +94,10 @@ exports.cliente_find = async (req, res) =>{
         return res.send(error)
     }
 
-    res.send('Cliente no encontrado')
+    res.statu(202).json('Cliente no encontrado')
 }
 
 // Get latest cliente
-
 exports.cliente_latest = async (req, res) =>{
     try {
         const response = await Cliente.findOne().sort({clave: -1})

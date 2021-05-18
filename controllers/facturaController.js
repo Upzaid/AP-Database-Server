@@ -2,13 +2,11 @@ const Factura = require('../models/factura')
 const Orden = require('../models/orden')
 const Cliente = require('../models/cliente')
 const validation = require('../validation').facturaValidation
-const cliente = require('../models/cliente')
-const factura = require('../models/factura')
 
 // List of facturas
 module.exports.factura_list = async (req, res) =>{
     try {
-        res.json(await Factura.find().sort({folio: -1}))
+        res.json(await Factura.find().sort({folio: -1}).populate('receptor'))
     } catch (error) {
         res.status(500).send(error)
     }
@@ -27,7 +25,11 @@ module.exports.factura_create = async (req, res) =>{
     // Check receptor (cliente) exists and get id
     try {
         const cliente = await Cliente.findOne({clave: receptor})    
-        if (!cliente) errors.push('Receptor no existe')
+        if (!cliente){
+            errors.push('Receptor no existe')
+        }else {
+            clienteID = cliente.id
+        }
     } catch (error) {
         res.status(500).send(error)
     }
@@ -70,11 +72,10 @@ module.exports.factura_create = async (req, res) =>{
             serie,
             folio,
             fecha,
-            receptor: cliente.id,
+            receptor: clienteID,
             ordenes: ordenesIDs,
             total
         })
-
         await factura.save()
         res.json('Factura creada exitosamente')
 
@@ -85,7 +86,6 @@ module.exports.factura_create = async (req, res) =>{
 
 // Delete factura
 module.exports.factura_delete = async (req, res) =>{
-    console.log('HOLA');
     try {
         const response = await Factura.findOneAndDelete({serie: req.body.serie, folio: req.body.folio})
         if (response) return res.json('Factura eliminada exitosamente')
@@ -154,7 +154,7 @@ module.exports.factura_edit = async (req, res) =>{
             }
     }))
 
-    if(errors.length > 0) return res.json(errors)
+    if(errors.length > 0) return res.status(202).json(errors)
     
     // Save into database
     try {
@@ -184,10 +184,10 @@ module.exports.factura_latest = async (req, res) =>{
     }
 }
 
-// Find factura by folio
+// Find factura by folio and serie
 module.exports.factura_find = async (req, res) =>{
     try {
-        res.json(await Factura.findOne({serie: req.params.serie, folio: req.params.folio}).populate('ordenes'))
+        res.json(await Factura.findOne({serie: req.params.serie, folio: req.params.folio}).populate('ordenes').populate('receptor'))
     } catch (error) {
         res.status(500).send(error)
     }
