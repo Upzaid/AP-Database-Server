@@ -111,6 +111,7 @@ exports.ordenValidation = Joi.object({
     total: Joi.number().allow(''),
 
     estatus: Joi.string(),
+    comision: Joi.number().allow(''),
 })
 
 // Liquidacion

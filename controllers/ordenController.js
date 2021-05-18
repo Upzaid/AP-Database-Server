@@ -13,10 +13,10 @@ exports.orden_list = async (req, res) =>{
         res.json(response.map(orden=>{
             const {serie, folio, fecha, ruta, origen, tipo_servicio, destino_agencia, observaciones,
                 consignatario, naviera, contenedor, tamano, sello, booking, peso, operador, unidad,
-                flete, maniobra, almacenaje, flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total} = orden
+                flete, maniobra, almacenaje, flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total, comision} = orden
             
             return(
-                {serie, folio, fecha, ruta, origen, tipo_servicio, destino_agencia, observaciones,
+                {serie, folio, fecha, ruta, origen, tipo_servicio, destino_agencia, observaciones, comision,
                 consignatario:{
                     clave: consignatario.clave,
                     razon_social: consignatario.razon_social
@@ -114,12 +114,12 @@ exports.orden_create = async (req, res) =>{
     try {
         const {serie, folio, fecha, ruta, origen, tipo_servicio, destino_agencia, observaciones,
             contenedor, tamano, sello, booking, peso, flete, maniobra, almacenaje, 
-            flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total} = req.body
+            flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total, comision} = req.body
         
         const orden = new Orden(
             {serie, folio, fecha, ruta, origen, tipo_servicio, destino_agencia, observaciones,
             consignatario: consignatarioID, naviera: navieraID, contenedor, tamano, sello, booking, peso, operador: operadorID, unidad: unidadID,
-            flete, maniobra, almacenaje, flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total})
+            flete, maniobra, almacenaje, flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total, comision})
             
         orden.save()
         return res.json('Orden guardada exitosamente')
@@ -206,7 +206,7 @@ exports.orden_edit = async (req, res) =>{
     try {
         const {serie, folio, fecha, ruta, origen, tipo_servicio, destino_agencia, observaciones,
             contenedor, tamano, sello, booking, peso, flete, maniobra, almacenaje, 
-            flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total} = req.body
+            flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total, comision} = req.body
         
         const orden = new Orden(
             {_id: response.id,
@@ -216,7 +216,7 @@ exports.orden_edit = async (req, res) =>{
             operador: operadorID, 
             unidad: unidadID,
             flete, maniobra, almacenaje, flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, 
-            retencion, estatus, total})
+            retencion, estatus, total, comision})
             
         await Orden.findByIdAndUpdate(response.id, orden, {useFindAndModify: false})
         return res.json('Orden actualizada exitosamente')
@@ -234,7 +234,7 @@ exports.orden_find = async (req, res) =>{
     } catch (error) {
         return res.status(500).send(error)
     }
-    res.status(403).json('Orden no existente')
+    res.status(202).json('Orden no existe')
 }
 
 // Find latest orden
