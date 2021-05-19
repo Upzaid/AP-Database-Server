@@ -7,7 +7,7 @@ const LiquidacionSchema = new Schema({
     fecha: {type: Date},
     operador: {type: Schema.Types.ObjectId, ref:'Personal'},
     ordenes: [{type: Schema.Types.ObjectId, ref:'Orden'}],
-    anticipos: [{type: Schema.Types.ObjectId, ref:'Orden'}],
+    anticipos: [{type: Schema.Types.ObjectId, ref:'Anticipo'}],
     comprobacion: [{
         concepto: String,
         importe: Number
