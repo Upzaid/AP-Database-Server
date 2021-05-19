@@ -1,5 +1,6 @@
 const validation = require('../validation').navieraValidation
 const Naviera = require('../models/naviera')
+const Orden = require('../models/orden')
 
 // List of navieras
 
@@ -50,15 +51,37 @@ exports.naviera_create = async (req, res) =>{
 
 // Delete naviera
 exports.naviera_delete = async (req, res) =>{
+    const errors = []
+    let navieraID
+
+    // Check if naviera exists and get id
+    try {
+        const naviera = await Naviera.findOne({clave: req.body.clave})
+        if (!naviera){
+            errors.push('Naviera no existe')
+        }else {
+            navieraID = naviera.id
+        }
+    } catch (error) {
+        return res.status(500).send(error)
+    }
     
-    const response = await Naviera.findOne({clave: req.body.clave}, {useFindAndModify: false})
-    
-    if (response) {
-        await Naviera.findByIdAndRemove(response.id)
-        return res.json('Naviera borrada exitosamente')
+    // Check if naviera is in a orden
+    try {
+        const orden = await Orden.findOne({naviera: navieraID})
+        if (orden) errors.push(`Naviera utilizada por la Orden ${orden.serie}-${orden.folio}`)
+    } catch (error) {
+        return res.status(500).send(error)
     }
 
-    res.status(202).json('Naviera no existe')
+    if(errors.length > 0) return res.status(202).json(errors)
+
+    try {
+        const response = await Naviera.findByIdAndDelete(navieraID)
+        if(response) return res.json('Naviera eliminada exitosamente')
+    } catch (error) {
+        return res.status(500).send(error)
+    }
 }
 
 // Edit naviera

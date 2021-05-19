@@ -91,7 +91,7 @@ exports.anticipo_delete = async (req,res) =>{
         }
 
     } catch (error) {
-        res.status(500).send(error)
+        return res.status(500).send(error)
     }
 
     // Check if there are liquidaicones anticipo
@@ -99,7 +99,7 @@ exports.anticipo_delete = async (req,res) =>{
         const liquidacion = await Liquidacion.findOne({anticipos: anticipoID})
         if (liquidacion) errors.push(`Anticipo en la liquidacion ${liquidacion.folio}`)
     } catch (error) {
-        res.status(500).send(error)
+        return res.status(500).send(error)
     }
 
     if (errors.length > 0) return res.status(202).json(errors)

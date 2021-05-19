@@ -1,5 +1,7 @@
 const validation = require('../validation').unidadValidation
 const Unidad = require('../models/unidad')
+const Mantenimiento = require('../models/mantenimiento')
+const Orden = require('../models/orden')
 
 // Unidad list
 exports.unidad_list = async (req, res) =>{
@@ -49,13 +51,45 @@ exports.unidad_create = async (req, res) =>{
 
 // Delete unidad
 exports.unidad_delete = async (req, res) =>{
+    const errors =[]
+    let unidadID
+
+    // Check if unidad exists and get id
     try {
-        const response = await Unidad.findOneAndDelete({clave: req.body.clave})
-        if (response) return res.json('Unidad borrada exitosamente')
+        const unidad = await Unidad.findOne({clave: req.body.clave})
+        if(!unidad) {
+            errors.push('Uniadad no existe')
+        }else {
+            unidadID - unidad.id
+        }
     } catch (error) {
-        return res.status(500).sned(error)
+        return res.statu(500).send(error)
     }
-    res.status(202).json('Unidad no existe')
+
+    // Check if unidad is in mantenimiento and/or orden
+    try {
+        const mantenimiento = await Mantenimiento.findOne({unidad: unidadID})
+        if (unidad) errors.push(`Unidad en Orden de Mantenimiento ${mantenimiento.folio}`)
+    } catch (error) {
+        return res.statu(500).send(error)
+    }
+
+    try {
+        const orden = await Orden.findOne({unidad: unidadID})
+        if (orden) errors.push(`Unidad en Orden ${orden.serie}-${orden.folio}`)
+    } catch (error) {
+        return res.statu(500).send(error)
+    }
+
+    if (errors.length > 0) return res.status(202).json(errors)
+
+    try {
+        const response = await Unidad.findByIdAndDelete(unidadID)
+        if(response) res.json('Unidad eliminada exitosamente')
+    } catch (error) {
+        return res.statu(500).send(error)
+    }
+
 }
 
 // Edit unidad

@@ -1,5 +1,8 @@
 const validation = require('../validation').personalValidation
 const Personal = require('../models/personal')
+const Anticipo = require('../models/anticipo')
+const Liquidacion = require('../models/liquidacion')
+const Orden = require('../models/orden')
 
 // List of personal
 exports.peronal_list = async (req, res) =>{
@@ -78,17 +81,51 @@ exports.personal_create = async (req, res) =>{
 // Delete personal
 
 exports.personal_delete = async (req, res)=>{
+    const errors =[]
+    let personalID
+    
+    // Find personal and get id
     try {
-        const response = await Personal.findOne({clave: req.body.clave})
-        if (response){   
-            await Personal.findByIdAndRemove(response.id, {useFindAndModify: false})
-            return res.json('Pesonal borrado exitosamente')
+        const personal = await Personal.findOne({clave: req.body.clave})
+        if(!personal) {
+            errors.push('Personal no existe')
+        }else {
+            personalID = personal.id
         }
-
     } catch (error) {
-       return res.send(error)
+        return res.status(500).send(error)
     }
-    res.status(202).json('Personal no existe')
+
+    // Check if personal is in a liquidacion, orden, and/or anticipo 
+    try {
+        const liquidacion = await Liquidacion.findOne({operador: personalID})
+        if (liquidacion) errors.push(`Personal en la Liquidacion ${liquidacion.folio}`)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+
+    try {
+        const orden = await Orden.findOne({operador: personalID})
+        if (orden) errors.push(`Personal en la Orden ${orden.serie}-${orden.folio}`)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+
+    try {
+        const anticipo = await Anticipo.findOne({personal: personalID})
+        if (anticipo) errors.push(`Personal en el Anticipo ${anticipo.serie}-${anticipo.folio}`)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+
+    if (errors.length > 0) return res.status(202).json(errors)
+
+    try {
+        const response = await Personal.findByIdAndDelete(personalID)
+        if (response) res.json('Personal eliminado exitosamente')
+    } catch (error) {
+        return res.status(500).send(error)
+    }
 }
 
 // Edit personal

@@ -4,6 +4,8 @@ const Naviera = require('../models/naviera')
 const Personal = require('../models/personal')
 const Unidad = require('../models/unidad')
 const Cliente = require('../models/cliente')
+const Factura = require('../models/factura')
+const Liquidacion = require('../models/liquidacion')
 
 // List of ordenes
 exports.orden_list = async (req, res) =>{
@@ -131,13 +133,47 @@ exports.orden_create = async (req, res) =>{
 
 // Delete orden
 exports.orden_delete = async (req, res) =>{
+    
+    const errors =[]
+    let ordenID
+
+    // Find orden and get id
     try {
-        const response = await Orden.findOneAndDelete({serie: req.body.serie, folio: req.body.folio})
-        if(response) return res.json('Orden borrada exitosmente')
+        const orden = await Orden.findOne({serie: req.body.serie, folio: req.body.folio})
+        if (!orden){
+            errors.push('Orden no existe')
+        }else {
+            ordenID = orden.id
+        }
     } catch (error) {
         return res.status(500).send(error)
     }
-    res.status(202).json('Orden no existe')
+
+    // Check if orden is usend in a factura and/or liquidacion
+
+    try {
+        const factura = await Factura.findOne({ordenes: ordenID})
+        if (factura) errors.push(`Orden en la Factura ${factura.serie}-${factura.folio}`)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+
+    try {
+        const liquidacion = await Liquidacion.findOne({ordenes: ordenID})
+        if (liquidacion) errors.push(`Orden en la Liquidacion ${liquidacion.serie}-${liquidacion.folio}`)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+    
+    if(errors.length > 0) return res.status(202).json(errors)
+
+    try {
+        const response = await Orden.findByIdAndDelete(ordenID)
+        if (response) res.json('Orden eliminada exitosamente')
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(error)
+    }
 }
 
 // Edit orden
