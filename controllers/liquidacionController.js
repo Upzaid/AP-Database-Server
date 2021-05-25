@@ -17,7 +17,7 @@ module.exports.liquidacion_list = async (req, res) =>{
 // Create liquidacion
 module.exports.liquidacion_create = async (req, res) =>{
     const errors = []
-    const {fecha, folio, operador, ordenes, anticipos, comprobacion, importe} = req.body
+    const {fecha_inicio, fecha_cierre, folio, operador, ordenes, anticipos, comprobacion, importe} = req.body
     
     // Validate inputs
 
@@ -95,7 +95,8 @@ module.exports.liquidacion_create = async (req, res) =>{
     try {
         const liquidacion = new Liquidacion({
             folio,
-            fecha,
+            fecha_inicio,
+            fecha_cierre,
             operador: personalID,
             ordenes: ordenesIDs,
             anticipos: anticiposIDs,
@@ -127,7 +128,7 @@ module.exports.liquidacion_delete = async (req, res) =>{
 // Edit liquidacion
 module.exports.liquidacion_edit = async (req, res) =>{
     const errors = []
-    const {fecha, folio, operador, ordenes, anticipos, comprobacion, importe} = req.body
+    const {fecha_inicio, fecha_cierre, folio, operador, ordenes, anticipos, comprobacion, importe} = req.body
     
     // Validate inputs
 
@@ -213,7 +214,8 @@ module.exports.liquidacion_edit = async (req, res) =>{
     try {
         const liquidacion = new Liquidacion({
             folio,
-            fecha,
+            fecha_inicio,
+            fecha_cierre,
             operador: personalID,
             ordenes: ordenesIDs,
             anticipos: anticiposIDs,

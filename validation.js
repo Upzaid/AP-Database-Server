@@ -132,7 +132,8 @@ const comprobacion = Joi.object().keys({
 
 exports.liquidacionValidation = Joi.object({
     folio: Joi.number().required().integer(),
-    fecha: Joi.date().required(),
+    fecha_inicio: Joi.date().required(),
+    fecha_cierre: Joi.date().required(),
     operador: Joi.number().required().integer(),
     importe: Joi.number().required(),
     anticipos: Joi.array().items(anticipo),
