@@ -192,3 +192,18 @@ module.exports.factura_find = async (req, res) =>{
         res.status(500).send(error)
     }
 }
+
+// Search Factura
+exports.search = async (req, res) =>{
+    const {field, data} = req.query
+    
+    const query = {
+        [field.replace(' ', '_').toLowerCase()] : data
+    }
+    
+    try {
+        res.json(await Factura.find(query).populate('receptor'))
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}

@@ -24,4 +24,7 @@ router.get('/latest', tokenAuthentication, factura_controller.factura_latest)
 // Find factura order by folio
 router.get('/find/:serie/:folio', tokenAuthentication, factura_controller.factura_find)
 
+// Search factura
+router.get('/search', tokenAuthentication, factura_controller.search)
+
 module.exports = router

@@ -12,40 +12,9 @@ exports.orden_list = async (req, res) =>{
     try {
         const response = await Orden.find().populate('naviera').populate('unidad').populate('operador').populate('consignatario').sort({folio: -1})
     
-        res.json(response.map(orden=>{
-            const {serie, folio, fecha, ruta, origen, tipo_servicio, destino_agencia, observaciones,
-                consignatario, naviera, contenedor, tamano, sello, booking, peso, operador, unidad,
-                flete, maniobra, almacenaje, flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total, comision} = orden
-            
-            return(
-                {serie, folio, fecha, ruta, origen, tipo_servicio, destino_agencia, observaciones, comision,
-                consignatario:{
-                    clave: consignatario.clave,
-                    razon_social: consignatario.razon_social
-                },
-                naviera:
-                    {
-                        clave: naviera.clave,
-                        razon_social: naviera.razon_social,
-                    }, 
-                contenedor, tamano, sello, booking, peso,
-                operador:
-                    {
-                        clave: operador.clave,
-                        nombres: operador.nombres,
-                        primer_apellido: operador.primer_apellido,
-                        segundo_apellido: operador.segundo_apellido,
-                    }, 
-                unidad:
-                {
-                    clave: unidad.clave,
-                    placas: unidad.placas
-                },
-                flete, maniobra, almacenaje, flete_falso, reexpedicion, dif_kilometraje, subtotal, iva, retencion, estatus, total
-                }
-            )
-        }))
+        res.json(response)
     } catch (error) {
+        
         return res.status(500).send(error)
     }
 }
@@ -160,7 +129,7 @@ exports.orden_delete = async (req, res) =>{
 
     try {
         const liquidacion = await Liquidacion.findOne({ordenes: ordenID})
-        if (liquidacion) errors.push(`Orden en la Liquidacion ${liquidacion.serie}-${liquidacion.folio}`)
+        if (liquidacion) errors.push(`Orden en la Liquidacion ${liquidacion.folio}`)
     } catch (error) {
         return res.status(500).send(error)
     }
@@ -280,5 +249,20 @@ exports.orden_latest = async (req, res) =>{
         if(response) return res.json(response)
     } catch (error) {
         return res.status(500).send(error)
+    }
+}
+
+// Search orden
+exports.search = async (req, res) =>{
+    const {field, data} = req.query
+    
+    const query = {
+        [field.replace(' ', '_').toLowerCase()] : data
+    }
+    
+    try {
+        res.json(await Orden.find(query).populate('operador').populate('naviera').populate('consignatario').populate('unidad'))
+    } catch (error) {
+        res.status(500).send(error)
     }
 }

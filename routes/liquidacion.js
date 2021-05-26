@@ -24,4 +24,7 @@ router.get('/find/:folio', tokenAuthentication, liquidacion_controller.liquidaci
 // Find latest liquidacion
 router.get('/latest', tokenAuthentication, liquidacion_controller.liquidacion_latest)
 
+// Search liqudacion
+router.get('/search', tokenAuthentication, liquidacion_controller.search)
+
 module.exports = router

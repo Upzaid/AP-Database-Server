@@ -20,4 +20,10 @@ router.put('/edit', tokenAuthentication, validation.editValidation, naviera_cont
 // Find naviera by clave
 router.get('/find/:clave', tokenAuthentication, naviera_controller.naviera_find)
 
+// Find latest naviera
+router.get('/latest', tokenAuthentication, naviera_controller.naviera_latest)
+
+// Search naviera
+router.get('/search', tokenAuthentication, naviera_controller.search)
+
 module.exports = router

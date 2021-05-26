@@ -131,3 +131,18 @@ exports.naviera_latest = async (req, res) =>{
         return res.status(500).send(error)
     }
 }
+
+// Search naviera
+exports.search = async (req, res) =>{
+    const {field, data} = req.query
+    
+    const query = {
+        [field.replace(' ', '_').toLowerCase()] : data
+    }
+    
+    try {
+        res.json(await Naviera.find(query))
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}

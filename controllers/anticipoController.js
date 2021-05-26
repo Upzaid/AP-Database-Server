@@ -169,3 +169,19 @@ exports.anticipo_latest = async (req, res) =>{
         return res.status(500).send(error)
     }
 }
+
+// Search Anticipo
+
+exports.search = async (req, res) =>{
+    const {field, data} = req.query
+    
+    const query = {
+        [field.replace(' ', '_').toLowerCase()] : data
+    }
+    console.log(query)
+    try {
+        res.json(await Anticipo.find(query).populate('personal'))
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}

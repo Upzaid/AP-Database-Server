@@ -15,7 +15,7 @@ router.post('/create', tokenAuthentication, validation.editValidation, mantenimi
 // Delete mantenimiento order
 router.delete('/delete', tokenAuthentication, validation.editValidation, mantenimiento_controller.mantenimiento_delete)
 
-// Delete mantenimiento order
+// Edit mantenimiento order
 router.put('/edit', tokenAuthentication, validation.editValidation, mantenimiento_controller.mantenimiento_edit)
 
 // Latest mantenimiento order
@@ -23,5 +23,8 @@ router.get('/latest', tokenAuthentication, mantenimiento_controller.mantenimient
 
 // Find mantenimiento order by folio
 router.get('/find/:folio', tokenAuthentication, mantenimiento_controller.mantenimiento_find)
+
+// Search mantenimiento
+router.get('/search', tokenAuthentication, mantenimiento_controller.search)
 
 module.exports = router

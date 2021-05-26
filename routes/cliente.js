@@ -23,4 +23,7 @@ router.get('/find/:clave', tokenAuthentication, cliente_controller.cliente_find)
 // Find latest cliente
 router.get('/latest', tokenAuthentication, cliente_controller.cliente_latest)
 
+// Search anticipo
+router.get('/search', tokenAuthentication, cliente_controller.search)
+
 module.exports = router

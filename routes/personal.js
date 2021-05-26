@@ -21,7 +21,10 @@ router.put('/edit', tokenAuthentication, validation.editValidation, personal_con
 // Find personal by clave
 router.get('/find/:clave', tokenAuthentication, personal_controller.personal_find)
 
-// Find latest anticipo
+// Find latest personal
 router.get('/latest', tokenAuthentication, personal_controller.personal_latest)
+
+// Searach personal
+router.get('/search', tokenAuthentication, personal_controller.search)
 
 module.exports = router

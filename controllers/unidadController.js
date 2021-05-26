@@ -60,34 +60,35 @@ exports.unidad_delete = async (req, res) =>{
         if(!unidad) {
             errors.push('Uniadad no existe')
         }else {
-            unidadID - unidad.id
+            unidadID = unidad.id
         }
     } catch (error) {
-        return res.statu(500).send(error)
+        return res.status(500).send(error)
     }
 
     // Check if unidad is in mantenimiento and/or orden
     try {
         const mantenimiento = await Mantenimiento.findOne({unidad: unidadID})
-        if (unidad) errors.push(`Unidad en Orden de Mantenimiento ${mantenimiento.folio}`)
+        if (mantenimiento) errors.push(`Unidad en Orden de Mantenimiento ${mantenimiento.folio}`)
     } catch (error) {
-        return res.statu(500).send(error)
+        return res.status(500).send(error)
     }
 
     try {
         const orden = await Orden.findOne({unidad: unidadID})
         if (orden) errors.push(`Unidad en Orden ${orden.serie}-${orden.folio}`)
     } catch (error) {
-        return res.statu(500).send(error)
+        return res.status(500).send(error)
     }
 
     if (errors.length > 0) return res.status(202).json(errors)
 
     try {
         const response = await Unidad.findByIdAndDelete(unidadID)
+        
         if(response) res.json('Unidad eliminada exitosamente')
     } catch (error) {
-        return res.statu(500).send(error)
+        return res.status(500).send(error)
     }
 
 }
@@ -129,4 +130,19 @@ exports.unidad_find = async (req, res) =>{
     }
 
     res.status(202).json('Unidad no existe')
+}
+
+// Search unidad
+exports.search = async (req, res) =>{
+    const {field, data} = req.query
+    
+    const query = {
+        [field.replace(' ', '_').toLowerCase()] : data
+    }
+    
+    try {
+        res.json(await Unidad.find(query))
+    } catch (error) {
+        res.status(500).send(error)
+    }
 }

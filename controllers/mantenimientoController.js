@@ -134,3 +134,18 @@ module.exports.mantenimiento_find = async (req, res) =>{
         res.status(500).send(error)
     }
 }
+
+// Search mantenimiento
+exports.search = async (req, res) =>{
+    const {field, data} = req.query
+    
+    const query = {
+        [field.replace(' ', '_').toLowerCase()] : data
+    }
+    
+    try {
+        res.json(await Mantenimiento.find(query).populate('unidad'))
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}

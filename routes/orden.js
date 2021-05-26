@@ -23,4 +23,7 @@ router.get('/find/:serie/:folio', tokenAuthentication, orden_controller.orden_fi
 // Find latest orden
 router.get('/latest', tokenAuthentication, orden_controller.orden_latest)
 
+// Search orden
+router.get('/search', tokenAuthentication, orden_controller.search)
+
 module.exports = router

@@ -139,3 +139,19 @@ exports.cliente_latest = async (req, res) =>{
         return res.status(500).send(error)
     }
 }
+
+// Search Cliente
+
+exports.search = async (req, res) =>{
+    const {field, data} = req.query
+    
+    const query = {
+        [field.replace(' ', '_').toLowerCase()] : data
+    }
+    
+    try {
+        res.json(await Cliente.find(query))
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}

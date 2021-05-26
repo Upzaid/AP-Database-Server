@@ -252,3 +252,18 @@ module.exports.liquidacion_latest = async (req, res) =>{
         res.status(500).send(error)
     }
 }
+
+// Search liquidacion
+exports.search = async (req, res) =>{
+    const {field, data} = req.query
+    
+    const query = {
+        [field.replace(' ', '_').toLowerCase()] : data
+    }
+    
+    try {
+        res.json(await Liquidacion.find(query).populate('operador'))
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}

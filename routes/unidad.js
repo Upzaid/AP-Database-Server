@@ -21,4 +21,7 @@ router.put('/edit', tokenAuthentication, validation.editValidation, unidad_contr
 // Find unidad by clave
 router.get('/find/:clave', tokenAuthentication, unidad_controller.unidad_find)
 
+// Search orden
+router.get('/search', tokenAuthentication, unidad_controller.search)
+
 module.exports = router

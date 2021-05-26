@@ -17,7 +17,13 @@ router.delete('/delete', tokenAuthentication, validation.editValidation, anticip
 // Edit anticipo
 router.put('/edit', tokenAuthentication, validation.editValidation,  anticipo_controller.anticipo_edit)
 
-// Find anticipo
+// Find anticipo by serie and folio
 router.get('/find/:serie/:folio', tokenAuthentication, anticipo_controller.anticipo_find)
+
+// Find latest anticipo
+router.get('/latest', tokenAuthentication, anticipo_controller.anticipo_latest)
+
+// Search anticipo
+router.get('/search', tokenAuthentication, anticipo_controller.search)
 
 module.exports = router
