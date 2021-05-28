@@ -26,4 +26,7 @@ router.get('/latest', tokenAuthentication, anticipo_controller.anticipo_latest)
 // Search anticipo
 router.get('/search', tokenAuthentication, anticipo_controller.search)
 
+// Anticipo Range
+router.get('/range', tokenAuthentication, anticipo_controller.date_range)
+
 module.exports = router

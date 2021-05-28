@@ -185,3 +185,13 @@ exports.search = async (req, res) =>{
         res.status(500).send(error)
     }
 }
+
+exports.date_range = async (req, res) =>{
+
+    try {
+        const response = await Anticipo.find({fecha: {$gte: req.query.start, $lte:req.query.end}}).populate('personal')
+        res.json(response)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}
