@@ -9,6 +9,7 @@ const FacturaSchema = new Schema({
     receptor: {type: Schema.Types.ObjectId, ref: 'Cliente'},
     ordenes: [{type: Schema.Types.ObjectId, ref: 'Orden'}],
     total: {type: Number},
+    estatus: {type: String, enum: ['Pendiente', 'Pagada', 'Cancelada'], default:'Pendiente'}
 })
 
 module.exports =  mongoose.model('Factura', FacturaSchema)

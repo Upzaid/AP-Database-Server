@@ -16,7 +16,7 @@ module.exports.factura_list = async (req, res) =>{
 module.exports.factura_create = async (req, res) =>{
     const errors =[]
 
-    const {serie, folio, fecha, receptor, ordenes, total} = req.body
+    const {serie, folio, fecha, receptor, ordenes, total, estatus} = req.body
     
     // Validate inputs
     const {error} = validation.validate(req.body)
@@ -74,7 +74,8 @@ module.exports.factura_create = async (req, res) =>{
             fecha,
             receptor: clienteID,
             ordenes: ordenesIDs,
-            total
+            total,
+            estatus
         })
         await factura.save()
         res.json('Factura creada exitosamente')
@@ -99,7 +100,7 @@ module.exports.factura_delete = async (req, res) =>{
 module.exports.factura_edit = async (req, res) =>{
     const errors =[]
 
-    const {serie, folio, fecha, receptor, ordenes, total} = req.body
+    const {serie, folio, fecha, receptor, ordenes, total, estatus} = req.body
     
     // Validate inputs
     const {error} = validation.validate(req.body)
@@ -165,6 +166,7 @@ module.exports.factura_edit = async (req, res) =>{
             receptor: clienteID,
             ordenes: ordenesIDs,
             total,
+            estatus,
             _id: facturaID
         })
         

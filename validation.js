@@ -161,4 +161,5 @@ exports.facturaValidation = Joi.object({
     receptor: Joi.number().required().integer(),
     ordenes: Joi.array().items(orden),
     total: Joi.number().required(),
+    estatus: Joi.string().required()
 })
