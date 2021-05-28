@@ -13,6 +13,7 @@ const unidadRouter = require('./routes/unidad')
 const ordenRouter = require('./routes/orden')
 const liquidacionRouter = require('./routes/liquidacion')
 const mantenimientoRouter = require('./routes/mantenimiento')
+const facturaRouter = require('./routes/factura')
 
 // Initilize express
 
@@ -41,6 +42,6 @@ app.use('/unidad', unidadRouter)
 app.use('/orden', ordenRouter)
 app.use('/liquidacion', liquidacionRouter)
 app.use('/mantenimiento', mantenimientoRouter)
-
+app.use('/factura', facturaRouter)
 
 app.listen(process.env.PORT || 5000, ()=> console.log(`Server running on port ${process.env.PORT || 5000}`))
