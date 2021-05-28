@@ -9,6 +9,12 @@ exports.user = async (req, res) =>{
     res.json({user: req.user.username, permissions: req.user.permissions})
 }
 
+// User list
+
+exports.list = async (req, res)=>{
+    res.json(await User.find())
+}
+
 // User registration
 
 exports.registration = async (req, res) =>{
@@ -77,5 +83,5 @@ exports.delete = async (req, res) =>{
         return res.json('Usuario borrado exitosamente')
     }
     
-    res.status(202).json('Usuario no existe')
+    res.status(202).json(['Usuario no existe'])
 }

@@ -6,7 +6,10 @@ const validation = require('../validation')
 const user_controller = require('../controllers/userController')
 
 // Get user data
-router.get('/list', tokenAuthentication, user_controller.user)  
+router.get('/active', tokenAuthentication, user_controller.user)  
+
+// List of users
+router.get('/list', tokenAuthentication, validation.adminValidation, user_controller.list)
 
 // Register user
 router.post('/register', tokenAuthentication, validation.adminValidation, user_controller.registration)
